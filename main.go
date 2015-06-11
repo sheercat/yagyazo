@@ -8,7 +8,7 @@ import (
 	"path"
 	"strconv"
 	"time"
-	"github.com/k0kubun/pp"
+	_ "github.com/k0kubun/pp"
 )
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
@@ -16,8 +16,8 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
-	pp.Print(r)
-
+	// pp.Print(r)
+	
 	dir, err := os.Getwd()
 	if err != nil {
 		fmt.Fprintln(w, err)
@@ -28,7 +28,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, err)
 		return
 	}
-	file, header, err := r.FormFile("imagedata")
+	file, _, err := r.FormFile("imagedata")
 	if err != nil {
 		fmt.Fprintln(w, err)
 		return
@@ -50,7 +50,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	pp.Print(header)
+	// pp.Print(header)
 	fmt.Fprintf(w, "http://%s/images/%s", r.Host, basename)
 }
 
@@ -60,9 +60,9 @@ func imagesHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, err)
 		return
 	}
-	pp.Print(r)
+	// pp.Print(r)
 	imagefile := path.Join(dir, r.URL.Path)
-	pp.Print(imagefile)
+	// pp.Print(imagefile)
 	http.ServeFile(w, r, imagefile)
 }
 
