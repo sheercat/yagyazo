@@ -1,15 +1,18 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	_ "github.com/k0kubun/pp"
 	"io"
 	"net/http"
 	"os"
 	"path"
 	"strconv"
 	"time"
-	_ "github.com/k0kubun/pp"
 )
+
+var PortNumber *string = flag.String("port", "8080", "port number.")
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "hello")
@@ -17,7 +20,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	// pp.Print(r)
-	
+
 	dir, err := os.Getwd()
 	if err != nil {
 		fmt.Fprintln(w, err)
@@ -70,5 +73,5 @@ func main() {
 	http.HandleFunc("/", rootHandler)
 	http.HandleFunc("/images/", imagesHandler)
 	http.HandleFunc("/upload", uploadHandler)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":" + *PortNumber, nil)
 }
