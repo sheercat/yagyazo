@@ -70,6 +70,7 @@ func imagesHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	flag.Parse()
 	http.HandleFunc("/", rootHandler)
 	http.HandleFunc("/images/", imagesHandler)
 	http.HandleFunc("/upload", uploadHandler)
