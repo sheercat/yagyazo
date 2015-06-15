@@ -1,22 +1,21 @@
-# yagyazo
+# atto
 
-yet another gyazo server by golang.
-
-## Prerequisites
-
-You will need golang.
-
-## Running
-
-    go run main.go
+yet another gyazo.
 
 ## install
 
-    go get me
+    go get github.com/sheercat/yagyazo
+
+## Getting Started
+
+   $ yagyazo
+
+   $ yagyazo --port=9090
+
+   $ yagyazo --user=basic --pass=auth
 
 ## License
 
 yagyazo licensed under the MIT
-
 
 
