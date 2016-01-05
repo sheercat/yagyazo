@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	_ "github.com/k0kubun/pp"
 	"io"
 	"log"
 	"net/http"
@@ -11,6 +10,8 @@ import (
 	"path"
 	"strconv"
 	"time"
+
+	_ "github.com/k0kubun/pp"
 )
 
 var portNumber = flag.String("port", "8080", "port number.")
@@ -41,7 +42,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	defer file.Close()
-	basename := strconv.FormatInt(time.Now().UnixNano(), 10) + ".jpg"
+	basename := strconv.FormatInt(time.Now().UnixNano(), 10) + ".png"
 	imagefile := path.Join(imagedir, basename)
 	out, err := os.Create(imagefile)
 	if err != nil {
