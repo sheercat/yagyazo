@@ -10,16 +10,17 @@ import (
 	"path"
 	"strconv"
 	"time"
-
-	_ "github.com/k0kubun/pp"
 )
 
 var portNumber = flag.String("port", "8080", "port number.")
 var basicAuthUser = flag.String("user", "", "basic auth user name")
 var basicAuthPass = flag.String("pass", "", "basic auth user pass")
+var urlPath = flag.String("path", "gyazo", "path for image url")
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "hello")
+	// pp.Print(r)
+
+	fmt.Fprintf(w, "hello "+r.URL.Path)
 }
 
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
@@ -30,8 +31,8 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, err)
 		return
 	}
-	imagedir := path.Join(dir, "images")
-	if err := os.Mkdir(imagedir, 0755); err != nil && !os.IsExist(err) {
+	imagedir := path.Join(dir, *urlPath, "images")
+	if err := os.MkdirAll(imagedir, 0755); err != nil && !os.IsExist(err) {
 		fmt.Fprintln(w, err)
 		return
 	}
@@ -58,7 +59,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// pp.Print(header)
-	fmt.Fprintf(w, "http://%s/images/%s", r.Host, basename)
+	fmt.Fprintf(w, "https://%s/%s/images/%s", r.Host, *urlPath, basename)
 }
 
 func checkAuth(w http.ResponseWriter, r *http.Request) bool {
@@ -75,6 +76,8 @@ func checkAuth(w http.ResponseWriter, r *http.Request) bool {
 }
 
 func imagesHandler(w http.ResponseWriter, r *http.Request) {
+	// pp.Print(r)
+
 	if checkAuth(w, r) == false {
 		w.Header().Set("WWW-Authenticate", `Basic realm="Atto"`)
 		w.WriteHeader(401)
@@ -99,9 +102,10 @@ func main() {
 		log.Println("basic auth: " + *basicAuthUser)
 	}
 	log.Println("listen:" + *portNumber)
+	log.Println("path:" + *urlPath)
 
 	http.HandleFunc("/", rootHandler)
-	http.HandleFunc("/images/", imagesHandler)
-	http.HandleFunc("/upload", uploadHandler)
+	http.HandleFunc(fmt.Sprintf("/%s/images/", *urlPath), imagesHandler)
+	http.HandleFunc(fmt.Sprintf("/%s/upload", *urlPath), uploadHandler)
 	http.ListenAndServe(":"+*portNumber, nil)
 }
